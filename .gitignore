@@ -4,6 +4,10 @@ client/node_modules/
 server/node_modules/
 tests/node_modules/
 
+# MongoDB in-memory server binaries
+**/.cache/
+**/.cache/*
+
 # Env files
 .env
 .env.*   # optional: ignore .env.test etc.
