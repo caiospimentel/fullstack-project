@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build:
+      context: ../server
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - MONGO_URL=mongodb://mongodb:27017/your-db
+    command: npm run dev
+
+  email-worker:
+    build:
+      context: ../email-worker
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672
+      - SMTP_HOST=mail.smtpbucket.com
+      - SMTP_PORT=8025
+    command: node worker.js
+
+volumes:
+  mongo-data:

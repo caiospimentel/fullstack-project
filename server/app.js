@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const amqp = require('amqplib');
 const graphqlHandler = require('./graphql');
 const { validateAuth, logoutUser } = require('./auth/authController');
 const { validateToken } = require('./auth/authMiddleware');
@@ -28,6 +29,30 @@ app.get('/protected', validateToken, (req, res) => {
     message: 'Hello, authorized user!',
     user: req.user
   });
+});
+
+// Email testing
+app.post('/send-test-email', async (req, res) => {
+  try {
+    const connection = await amqp.connect(process.env.RABBITMQ_URL);
+    const channel = await connection.createChannel();
+    const queue = 'send-email';
+
+    const emailPayload = {
+      to: 'recipient@example.com',
+      subject: 'Test Email from Docker App',
+      text: 'This is a test email sent via RabbitMQ and Email Worker!',
+    };
+
+    await channel.assertQueue(queue, { durable: true });
+    await channel.sendToQueue(queue, Buffer.from(JSON.stringify(emailPayload)), { persistent: true });
+
+    console.log('Test email published to queue');
+    res.send('Email job sent!');
+  } catch (error) {
+    console.error('Error publishing email:', error);
+    res.status(500).send('Failed to publish email');
+  }
 });
 
 module.exports = app;
