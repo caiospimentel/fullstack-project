@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: backend-image
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5000
+        env:
+        - name: RABBITMQ_URL
+          value: amqp://guest:guest@rabbitmq-service:5672
+        - name: MONGO_URL
+          value: mongodb://mongo-service:27017/your-db
+        command: ["npm", "run", "dev"]
