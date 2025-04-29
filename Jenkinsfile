@@ -9,13 +9,6 @@ pipeline {
   }
 
   stages {
-    stage('Checkout') {
-      steps {
-      
-        git url: 'https://github.com/caiospimentel/fullstack-project.git', branch: 'main'
-      }
-    }
-
     stage('Connect to Minikube Docker') {
       steps {
         sh '''
