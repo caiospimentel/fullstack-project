@@ -1,6 +1,8 @@
 pipeline {
   agent any
-
+  options {
+    skipDefaultCheckout(true)
+  }
   environment {
     // This makes Docker build into Minikube's Docker daemon
     MINIKUBE_ENV = "eval \$(minikube docker-env)"
