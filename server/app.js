@@ -9,7 +9,7 @@ require('./models/Event');
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:3000', // Adjust to match your frontend port
+  origin: 'http://localhost:3000', 
   credentials: true
 }));
 app.use(express.json());
