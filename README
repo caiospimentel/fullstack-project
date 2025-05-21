@@ -1,1 +1,1 @@
-to test, need to start mongo and redis
+run make up to start sever with docker and dependencies

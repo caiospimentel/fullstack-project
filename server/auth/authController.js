@@ -23,8 +23,6 @@ async function validateAuth(req, res){
 
     try{
 
-        await connectRedis();
-
         await redisClient.set(token, 'valid', {
             EX: 60 * 60, // expires in 1 hour
           });

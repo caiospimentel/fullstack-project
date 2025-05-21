@@ -8,7 +8,10 @@ const { validateToken } = require('./auth/authMiddleware');
 require('./models/Event');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Adjust to match your frontend port
+  credentials: true
+}));
 app.use(express.json());
 
 app.all('/graphql', graphqlHandler);
